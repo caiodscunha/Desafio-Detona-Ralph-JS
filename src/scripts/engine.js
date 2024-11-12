@@ -31,10 +31,31 @@ function countDown(){
     state.values.currentTime--;
     state.view.timeLeft.textContent = state.values.currentTime;
     
-    if(state.values.currentTime <= 0){
-        alert("Game Over! O seu resultado foi: "+state.values.result);
-        
+    if (state.values.currentTime <= 0) {
+        state.values.lifes--;
+        updateLivesDisplay();
+
+        if (state.values.lifes > 0) {
+            restartRound();
+        } else {
+            alert(`Game Over! Sua melhor pontuação foi: ${state.values.bestScore}`);
+            clearInterval(state.actions.countDownTimerId);
+            clearInterval(state.actions.timerId);
+            state.values.hitPosition = null;
+        }
     }
+}
+
+function restartRound() {
+    alert(`Pontuação da rodada: ${state.values.result}`);
+    if (state.values.result > state.values.bestScore) {
+        state.values.bestScore = state.values.result;
+    }
+
+    state.values.result = 0;
+    state.view.score.textContent = state.values.result;
+    state.values.currentTime = 20;
+    state.view.timeLeft.textContent = state.values.currentTime;
 }
 
 function randomSquare(){
@@ -65,8 +86,13 @@ function addListenerHitBox(){
     })
 }
 
+function updateLivesDisplay() {
+    state.view.lifes.textContent = `X${state.values.lifes}`;
+}
+
 function init(){
     //moveEnemy();
+    updateLivesDisplay();
     addListenerHitBox();
 }
 
